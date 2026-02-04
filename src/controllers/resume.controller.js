@@ -7,9 +7,6 @@ const Experience = require('../models/experience');
 const Project = require('../models/project');
 const Certification = require('../models/certification');
 
-/* ============================
-   CREATE RESUME
-============================ */
 exports.createResume = async (req, res) => {
   try {
     const userId = req.userId;

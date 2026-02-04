@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/resume', require('./routes/resume.routes'));
+app.use('/api/resume', require('./routes/resume.route'));
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
