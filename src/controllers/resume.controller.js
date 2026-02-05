@@ -7,6 +7,7 @@ const Experience = require('../models/experience');
 const Project = require('../models/project');
 const Certification = require('../models/certification');
 
+
 exports.createResume = async (req, res) => {
   try {
     const userId = req.userId;
@@ -111,9 +112,7 @@ exports.createResume = async (req, res) => {
   }
 };
 
-/* ============================
-   GET MY RESUME (FULL)
-============================ */
+// GET MY RESUME (FULL)
 exports.getMyResume = async (req, res) => {
   try {
     const userId = req.userId;
@@ -158,9 +157,7 @@ exports.getMyResume = async (req, res) => {
   }
 };
 
-/* ============================
-   UPDATE RESUME OBJECTIVE
-============================ */
+// UPDATE RESUME OBJECTIVE
 exports.updateObjective = async (req, res) => {
   try {
     const { objective } = req.body;
@@ -177,9 +174,7 @@ exports.updateObjective = async (req, res) => {
   }
 };
 
-/* ============================
-   DELETE RESUME (FULL CLEANUP)
-============================ */
+// DELETE RESUME (FULL CLEANUP)
 exports.deleteResume = async (req, res) => {
   try {
     const resume = await Resume.findOne({ user_id: req.userId });
@@ -206,3 +201,4 @@ exports.deleteResume = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
