@@ -1,14 +1,21 @@
 {
   "name": "resume-builder-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Complete resume builder backend API",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "resume",
+    "builder",
+    "latex",
+    "pdf",
+    "api"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -21,5 +28,9 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   }
 }

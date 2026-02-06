@@ -1,5 +1,5 @@
-db schema
-Resume Builder Database Diagram (Normalized)
+// db schema
+// Resume Builder Database Diagram (Normalized)
 
 Table users {
   id objectid [primary key]
@@ -13,10 +13,23 @@ Table users {
 Table resumes {
   id objectid [primary key]
   user_id objectid [not null]
+  template_id objected
   objective text
   created_at timestamp
   updated_at timestamp
 }
+
+Table templates {
+  id objectid [primary key]
+  name varchar
+  description text
+  filePath varchar [not null]
+  isActive boolean
+  previewUrl varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
 
 /* =======================
    Personal Details
@@ -134,6 +147,7 @@ Table certifications {
    Relationships
 ======================= */
 
+
 Ref: resumes.user_id > users.id
 
 Ref: personal_details.resume_id > resumes.id
@@ -146,6 +160,7 @@ Ref: resume_skills.skill_id > skills.id
 
 Ref: resume_languages.resume_id > resumes.id
 Ref: resume_languages.language_id > languages.id
+Ref: templates.id < templates.name
 
 Ref: experience.resume_id > resumes.id
 Ref: experience.company_id > companies.id
@@ -153,3 +168,5 @@ Ref: experience.company_id > companies.id
 Ref: projects.resume_id > resumes.id
 Ref: certifications.resume_id > resumes.id
 
+
+Ref: templates.id < resumes.template_id

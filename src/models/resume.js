@@ -7,6 +7,10 @@ const resumeSchema = new mongoose.Schema(
             ref: 'User',
             required: true
         },
+        templateId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Template'
+        },
         objective: {
             type: String,
             default: ''
