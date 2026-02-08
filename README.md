@@ -6,17 +6,13 @@ Table users {
   name varchar
   email varchar [unique]
   password varchar
-  created_at timestamp
-  updated_at timestamp
 }
 
 Table resumes {
   id objectid [primary key]
-  user_id objectid [not null]
-  template_id objected
+  userId objectid [not null]
+  templateId objected
   objective text
-  created_at timestamp
-  updated_at timestamp
 }
 
 Table templates {
@@ -26,8 +22,6 @@ Table templates {
   filePath varchar [not null]
   isActive boolean
   previewUrl varchar
-  created_at timestamp
-  updated_at timestamp
 }
 
 
@@ -35,18 +29,18 @@ Table templates {
    Personal Details
 ======================= */
 
-Table personal_details {
+Table personalDetails {
   id objectid [primary key]
-  resume_id objectid [not null]
-  full_name varchar
+  resumeId objectid [not null]
+  fullName varchar
   address varchar
   email varchar
   phone varchar
   website varchar
   linkedin varchar
   github varchar
-  date_of_birth varchar
-  image_url varchar
+  dateOfBirth varchar
+  imageUrl varchar
 }
 
 /* =======================
@@ -55,17 +49,17 @@ Table personal_details {
 
 Table colleges {
   id objectid [primary key]
-  college_name varchar
+  collegeName varchar
   degree varchar
   specialization varchar
 }
 
 Table education {
   id objectid [primary key]
-  resume_id objectid [not null]
-  college_id objectid [not null]
+  resumeId objectid [not null]
+  collegeId objectid [not null]
   grade float
-  graduation_year varchar
+  graduationYear varchar
 }
 
 /* =======================
@@ -74,13 +68,13 @@ Table education {
 
 Table skills {
   id objectid [primary key]
-  skill_name varchar
+  skillName varchar
 }
 
-Table resume_skills {
+Table resumeSkills {
   id objectid [primary key]
-  resume_id objectid [not null]
-  skill_id objectid [not null]
+  resumeId objectid [not null]
+  skillId objectid [not null]
 }
 
 /* =======================
@@ -89,13 +83,13 @@ Table resume_skills {
 
 Table languages {
   id objectid [primary key]
-  language_name varchar
+  languageName varchar
 }
 
-Table resume_languages {
+Table resumeLanguages {
   id objectid [primary key]
-  resume_id objectid [not null]
-  language_id objectid [not null]
+  resumeId objectid [not null]
+  languageId objectid [not null]
 }
 
 /* =======================
@@ -104,16 +98,16 @@ Table resume_languages {
 
 Table companies {
   id objectid [primary key]
-  company_name varchar
+  companyName varchar
 }
 
 Table experience {
   id objectid [primary key]
-  resume_id objectid [not null]
-  company_id objectid [not null]
-  job_title varchar
-  start_date varchar
-  end_date varchar
+  resumeId objectid [not null]
+  companyId objectid [not null]
+  jobTitle varchar
+  startDate varchar
+  endDate varchar
   description text
 }
 
@@ -123,10 +117,10 @@ Table experience {
 
 Table projects {
   id objectid [primary key]
-  resume_id objectid [not null]
+  resumeId objectid [not null]
   title varchar
   description text
-  tech_stack varchar
+  techStack varchar
 }
 
 /* =======================
@@ -135,7 +129,7 @@ Table projects {
 
 Table certifications {
   id objectid [primary key]
-  resume_id objectid [not null]
+  resumeId objectid [not null]
   name varchar
   grade float
   date varchar
@@ -148,25 +142,25 @@ Table certifications {
 ======================= */
 
 
-Ref: resumes.user_id > users.id
+Ref: resumes.userId > users.id
 
-Ref: personal_details.resume_id > resumes.id
+Ref: personalDetails.resumeId > resumes.id
 
-Ref: education.resume_id > resumes.id
-Ref: education.college_id > colleges.id
+Ref: education.resumeId > resumes.id
+Ref: education.collegeId > colleges.id
 
-Ref: resume_skills.resume_id > resumes.id
-Ref: resume_skills.skill_id > skills.id
+Ref: resumeSkills.resumeId > resumes.id
+Ref: resumeSkills.skillId > skills.id
 
-Ref: resume_languages.resume_id > resumes.id
-Ref: resume_languages.language_id > languages.id
+Ref: resumeLanguages.resumeId > resumes.id
+Ref: resumeLanguages.languageId > languages.id
 Ref: templates.id < templates.name
 
-Ref: experience.resume_id > resumes.id
-Ref: experience.company_id > companies.id
+Ref: experience.resumeId > resumes.id
+Ref: experience.companyId > companies.id
 
-Ref: projects.resume_id > resumes.id
-Ref: certifications.resume_id > resumes.id
+Ref: projects.resumeId > resumes.id
+Ref: certifications.resumeId > resumes.id
 
 
-Ref: templates.id < resumes.template_id
+Ref: templates.id < resumes.templateId

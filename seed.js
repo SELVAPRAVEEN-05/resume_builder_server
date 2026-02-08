@@ -21,11 +21,11 @@ const seedDatabase = async () => {
     console.log('='.repeat(50));
 
     // Run all seed functions
-    await seedSkills();
-    await seedLanguages();
-    await seedColleges();
-    await seedCompanies();
-    await seedUsers();
+    // await seedSkills();
+    // await seedLanguages();
+    // await seedColleges();
+    // await seedCompanies();
+    // await seedUsers();
     await seedTemplates();
 
     console.log('='.repeat(50));

@@ -11,6 +11,8 @@ if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
+
+
 /**
  * Generate Resume PDF from LaTeX template
  */
@@ -70,7 +72,7 @@ ${exp.description || ''}
 `;
         });
         r('EXPERIENCES', experienceText);
-        
+
         // Also fill single experience fields for backward compatibility
         if (data.experience[0]) {
           const e = data.experience[0];
@@ -163,7 +165,7 @@ ${cert.description || ''}
           const auxFile = texPath.replace('.tex', '.aux');
           const logFile = texPath.replace('.tex', '.log');
           const outFile = texPath.replace('.tex', '.out');
-          
+
           [texPath, auxFile, logFile, outFile].forEach(file => {
             if (fs.existsSync(file)) {
               fs.unlinkSync(file);
@@ -180,7 +182,12 @@ ${cert.description || ''}
             return reject(new Error('PDF file not created'));
           }
 
-          resolve(pdfPath);
+          const pdfUrl = `/output/${pdfFileName}`;
+          resolve({
+            pdfPath,
+            pdfUrl
+          });
+
         }
       );
     } catch (err) {

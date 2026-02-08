@@ -1,23 +1,120 @@
-{\Huge \scshape {{{FULL_NAME}}}} \\[4pt]
-{{{EMAIL}}} | {{{PHONE}}} | \href{{{LINKEDIN}}}{LinkedIn} | \href{{{GITHUB}}}{GitHub}
+%-------------------------
+% Resume Template (Dynamic)
+% Backend Ready – LaTeX
+%-------------------------
 
-\section*{Objective}
-{{{OBJECTIVE}}}
+\documentclass[letterpaper,11pt]{article}
 
-\section*{Experience}
-{{{EXPERIENCES}}}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
 
-\section*{Education}
-{{{EDUCATIONS}}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
 
-\section*{Skills}
-{{{SKILLS}}}
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
 
-\section*{Languages}
-{{{LANGUAGES}}}
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
 
-\section*{Projects}
-{{{PROJECTS}}}
+% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
 
-\section*{Certifications}
-{{{CERTIFICATIONS}}}
+\pdfgentounicode=1
+
+%-------------------------
+% Custom Commands
+\newcommand{\resumeItem}[1]{
+  \item\small{{#1 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+  \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & #2 \\
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+  \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+    \small#1 & #2 \\
+  \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------
+% Resume Starts Here
+\begin{document}
+
+%----------HEADER----------
+\begin{center}
+  \textbf{\Huge \scshape {{FULL_NAME}}} \\ \vspace{2pt}
+  \small
+  {{PHONE}} $|$
+  \href{mailto:{{EMAIL}}}{\underline{{EMAIL}}} $|$
+  \href{{LINKEDIN}}{\underline{LinkedIn}} $|$
+  \href{{GITHUB}}{\underline{GitHub}}
+\end{center}
+
+%-----------OBJECTIVE-----------
+\section{Professional Summary}
+{{OBJECTIVE}}
+
+%-----------EDUCATION-----------
+\section{Education}
+\resumeSubHeadingListStart
+{{EDUCATIONS}}
+\resumeSubHeadingListEnd
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+\resumeSubHeadingListStart
+{{EXPERIENCES}}
+\resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+\resumeSubHeadingListStart
+{{PROJECTS}}
+\resumeSubHeadingListEnd
+
+%-----------SKILLS-----------
+\section{Technical Skills}
+\small
+{{SKILLS}}
+
+%-----------CERTIFICATIONS-----------
+\section{Certifications}
+{{CERTIFICATIONS}}
+
+%-----------LANGUAGES-----------
+\section{Languages}
+{{LANGUAGES}}
+
+\end{document}

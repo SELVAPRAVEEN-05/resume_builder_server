@@ -63,11 +63,13 @@ const validateAuth = (req, res, next) => {
       }
     }
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email) {
       return res.status(400).json({ message: 'Valid email is required' });
     }
 
-    if (!password || password.length < 6) {
+    // if (!password || password.length < 6) {
+    if (!password || password.length < 1) {
       return res.status(400).json({ message: 'Password must be at least 6 characters' });
     }
 

@@ -14,6 +14,14 @@ const resumeSchema = new mongoose.Schema(
         objective: {
             type: String,
             default: ''
+        },
+        pdfUrl: {
+            type: String,
+            default: null
+        },
+        title: {
+            type: String,
+            default: ''
         }
     },
     { timestamps: true }
