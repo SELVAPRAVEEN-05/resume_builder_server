@@ -7,26 +7,11 @@ const languages = [
     { languageName: "Hindi" },
     { languageName: "Telugu" },
     { languageName: "Malayalam" },
-    { languageName: "Kannada" },
-    { languageName: "Marathi" },
-    { languageName: "Bengali" },
-    { languageName: "Gujarati" },
-    { languageName: "Punjabi" },
-    { languageName: "Urdu" },
-    { languageName: "Odia" },
-
     { languageName: "French" },
     { languageName: "German" },
     { languageName: "Spanish" },
-    { languageName: "Italian" },
-    { languageName: "Portuguese" },
-    { languageName: "Dutch" },
-
-    { languageName: "Chinese" },
-    { languageName: "Japanese" },
-    { languageName: "Korean" },
-    { languageName: "Arabic" },
-    { languageName: "Russian" }
+    { languageName: "Mandarin Chinese" },
+    { languageName: "Japanese" }
 ];
 
 const seedLanguages = async () => {

@@ -6,17 +6,20 @@ const ResumeLanguage = require('../models/resumeLanguage');
 const Experience = require('../models/experience');
 const Project = require('../models/project');
 const Certification = require('../models/certification');
+const ResumeSection = require('../models/resumeSection');
 
 /**
- * CREATE RESUME (MULTIPLE ALLOWED)
+ * CREATE RESUME
+ * POST /api/resumes
+ * Required: userId (from auth middleware)
+ * Optional: templateKey, objective, personal, education, skills, languages, experience, projects, certifications
  */
 exports.createResume = async (req, res) => {
   try {
     const userId = req.userId;
     const {
-      title,
-      templateId,
-      objective,
+      templateKey = 'modern_1',
+      objective = '',
       personal,
       education,
       skills,
@@ -26,140 +29,212 @@ exports.createResume = async (req, res) => {
       certifications
     } = req.body;
 
+    // Create base resume
     const resume = await Resume.create({
       userId,
-      title,
-      templateId,
+      templateKey,
       objective
     });
 
+    // Add personal details if provided
     if (personal) {
-      await PersonalDetails.create({ resumeId: resume._id, ...personal });
+      await PersonalDetails.create({
+        resumeId: resume._id,
+        ...personal
+      });
     }
 
-    if (education?.length) {
-      await Education.insertMany(
-        education.map(e => ({ resumeId: resume._id, ...e }))
-      );
+    // Add education if provided
+    if (education && Array.isArray(education) && education.length > 0) {
+      const educationData = education.map((edu, index) => ({
+        resumeId: resume._id,
+        ...edu,
+        orderIndex: edu.orderIndex !== undefined ? edu.orderIndex : index
+      }));
+      await Education.insertMany(educationData);
     }
 
-    if (skills?.length) {
-      await ResumeSkill.insertMany(
-        skills.map(id => ({ resumeId: resume._id, skillId: id }))
-      );
+    // Add skills if provided
+    if (skills && Array.isArray(skills) && skills.length > 0) {
+      const skillsData = skills.map((skillId, index) => ({
+        resumeId: resume._id,
+        skillId,
+        orderIndex: index
+      }));
+      await ResumeSkill.insertMany(skillsData);
     }
 
-    if (languages?.length) {
-      await ResumeLanguage.insertMany(
-        languages.map(id => ({ resumeId: resume._id, languageId: id }))
-      );
+    // Add languages if provided
+    if (languages && Array.isArray(languages) && languages.length > 0) {
+      const languagesData = languages.map((languageId, index) => ({
+        resumeId: resume._id,
+        languageId,
+        orderIndex: index
+      }));
+      await ResumeLanguage.insertMany(languagesData);
     }
 
-    if (experience?.length) {
-      await Experience.insertMany(
-        experience.map(e => ({ resumeId: resume._id, ...e }))
-      );
+    // Add experience if provided
+    if (experience && Array.isArray(experience) && experience.length > 0) {
+      const experienceData = experience.map((exp, index) => ({
+        resumeId: resume._id,
+        ...exp,
+        orderIndex: exp.orderIndex !== undefined ? exp.orderIndex : index
+      }));
+      await Experience.insertMany(experienceData);
     }
 
-    if (projects?.length) {
-      await Project.insertMany(
-        projects.map(p => ({ resumeId: resume._id, ...p }))
-      );
+    // Add projects if provided
+    if (projects && Array.isArray(projects) && projects.length > 0) {
+      const projectsData = projects.map((proj, index) => ({
+        resumeId: resume._id,
+        ...proj,
+        orderIndex: proj.orderIndex !== undefined ? proj.orderIndex : index
+      }));
+      await Project.insertMany(projectsData);
     }
 
-    if (certifications?.length) {
-      await Certification.insertMany(
-        certifications.map(c => ({ resumeId: resume._id, ...c }))
-      );
+    // Add certifications if provided
+    if (certifications && Array.isArray(certifications) && certifications.length > 0) {
+      const certificationsData = certifications.map((cert, index) => ({
+        resumeId: resume._id,
+        ...cert,
+        orderIndex: cert.orderIndex !== undefined ? cert.orderIndex : index
+      }));
+      await Certification.insertMany(certificationsData);
     }
 
     res.status(201).json({
+      success: true,
       message: 'Resume created successfully',
-      resumeId: resume._id
+      resumeId: resume._id,
+      resume
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error creating resume:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while creating resume',
+      error: err.message
+    });
   }
 };
 
 /**
- * GET ALL RESUMES OF USER
+ * GET ALL RESUMES OF CURRENT USER
+ * GET /api/resumes
  */
 exports.getMyResumes = async (req, res) => {
   try {
     const resumes = await Resume
       .find({ userId: req.userId })
-      .populate('templateId')
+      .select('_id userId templateKey objective createdAt updatedAt')
       .sort({ createdAt: -1 });
 
-    res.json(resumes);
+    res.json({
+      success: true,
+      count: resumes.length,
+      resumes
+    });
 
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching resumes:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching resumes',
+      error: err.message
+    });
   }
 };
 
 /**
- * GET FULL RESUME BY ID
+ * GET SINGLE RESUME WITH ALL DETAILS
+ * GET /api/resumes/:resumeId
  */
 exports.getResumeById = async (req, res) => {
   try {
     const { resumeId } = req.params;
 
+    // Verify resume belongs to user
     const resume = await Resume.findOne({
       _id: resumeId,
       userId: req.userId
-    }).populate('templateId');
+    });
 
     if (!resume) {
-      return res.status(404).json({ message: 'Resume not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Resume not found'
+      });
     }
 
+    // Fetch all related data in parallel
     const [
-      personal,
-      education,
-      skills,
-      languages,
-      experience,
-      projects,
-      certifications
+      personalDetails,
+      educationList,
+      skillsList,
+      languagesList,
+      experienceList,
+      projectsList,
+      certificationsList,
+      sectionsList
     ] = await Promise.all([
       PersonalDetails.findOne({ resumeId }),
-      Education.find({ resumeId }).populate('collegeId'),
-      ResumeSkill.find({ resumeId }).populate('skillId'),
-      ResumeLanguage.find({ resumeId }).populate('languageId'),
-      Experience.find({ resumeId }).populate('companyId'),
-      Project.find({ resumeId }),
+      Education.find({ resumeId })
+        .populate('collegeId', 'collegeName')
+        .populate('degreeId', 'degreeName')
+        .populate('specializationId', 'specializationName')
+        .sort({ orderIndex: 1 }),
+      ResumeSkill.find({ resumeId })
+        .populate('skillId', 'skillName')
+        .sort({ orderIndex: 1 }),
+      ResumeLanguage.find({ resumeId })
+        .populate('languageId', 'languageName')
+        .sort({ orderIndex: 1 }),
+      Experience.find({ resumeId })
+        .populate('companyId', 'companyName')
+        .sort({ orderIndex: 1 }),
+      Project.find({ resumeId })
+        .sort({ orderIndex: 1 }),
       Certification.find({ resumeId })
+        .sort({ orderIndex: 1 }),
+      ResumeSection.find({ resumeId })
+        .sort({ orderIndex: 1 })
     ]);
 
     res.json({
+      success: true,
       resume,
-      personal,
-      education,
-      skills,
-      languages,
-      experience,
-      projects,
-      certifications
+      personalDetails,
+      education: educationList,
+      skills: skillsList,
+      languages: languagesList,
+      experience: experienceList,
+      projects: projectsList,
+      certifications: certificationsList,
+      sections: sectionsList
     });
 
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching resume:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching resume',
+      error: err.message
+    });
   }
 };
 
 /**
- * UPDATE RESUME BY ID
+ * UPDATE RESUME
+ * PUT /api/resumes/:resumeId
  */
 exports.updateResume = async (req, res) => {
   try {
     const { resumeId } = req.params;
     const {
-      title,
-      templateId,
+      templateKey,
       objective,
       personal,
       education,
@@ -170,143 +245,172 @@ exports.updateResume = async (req, res) => {
       certifications
     } = req.body;
 
+    // Verify resume belongs to user
     const resume = await Resume.findOne({
       _id: resumeId,
       userId: req.userId
     });
 
     if (!resume) {
-      return res.status(404).json({ message: 'Resume not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Resume not found'
+      });
     }
 
-    if (title) resume.title = title;
-    if (templateId) resume.templateId = templateId;
-    if (objective) resume.objective = objective;
+    // Update resume main fields
+    if (templateKey !== undefined) resume.templateKey = templateKey;
+    if (objective !== undefined) resume.objective = objective;
     await resume.save();
 
-    if (personal) {
+    // Update personal details
+    if (personal !== undefined) {
       await PersonalDetails.findOneAndUpdate(
         { resumeId },
-        personal,
-        { upsert: true }
+        { resumeId, ...personal },
+        { upsert: true, new: true }
       );
     }
 
-    if (education) {
+    // Update education (delete and recreate)
+    if (education !== undefined) {
       await Education.deleteMany({ resumeId });
-      if (education.length)
-        await Education.insertMany(
-          education.map(e => ({ resumeId, ...e }))
-        );
+      if (Array.isArray(education) && education.length > 0) {
+        const educationData = education.map((edu, index) => ({
+          resumeId,
+          ...edu,
+          orderIndex: edu.orderIndex !== undefined ? edu.orderIndex : index
+        }));
+        await Education.insertMany(educationData);
+      }
     }
 
-    if (skills) {
+    // Update skills (delete and recreate)
+    if (skills !== undefined) {
       await ResumeSkill.deleteMany({ resumeId });
-      if (skills.length)
-        await ResumeSkill.insertMany(
-          skills.map(id => ({ resumeId, skillId: id }))
-        );
+      if (Array.isArray(skills) && skills.length > 0) {
+        const skillsData = skills.map((skillId, index) => ({
+          resumeId,
+          skillId,
+          orderIndex: index
+        }));
+        await ResumeSkill.insertMany(skillsData);
+      }
     }
 
-    if (languages) {
+    // Update languages (delete and recreate)
+    if (languages !== undefined) {
       await ResumeLanguage.deleteMany({ resumeId });
-      if (languages.length)
-        await ResumeLanguage.insertMany(
-          languages.map(id => ({ resumeId, languageId: id }))
-        );
+      if (Array.isArray(languages) && languages.length > 0) {
+        const languagesData = languages.map((languageId, index) => ({
+          resumeId,
+          languageId,
+          orderIndex: index
+        }));
+        await ResumeLanguage.insertMany(languagesData);
+      }
     }
 
-    if (experience) {
+    // Update experience (delete and recreate)
+    if (experience !== undefined) {
       await Experience.deleteMany({ resumeId });
-      if (experience.length)
-        await Experience.insertMany(
-          experience.map(e => ({ resumeId, ...e }))
-        );
+      if (Array.isArray(experience) && experience.length > 0) {
+        const experienceData = experience.map((exp, index) => ({
+          resumeId,
+          ...exp,
+          orderIndex: exp.orderIndex !== undefined ? exp.orderIndex : index
+        }));
+        await Experience.insertMany(experienceData);
+      }
     }
 
-    if (projects) {
+    // Update projects (delete and recreate)
+    if (projects !== undefined) {
       await Project.deleteMany({ resumeId });
-      if (projects.length)
-        await Project.insertMany(
-          projects.map(p => ({ resumeId, ...p }))
-        );
+      if (Array.isArray(projects) && projects.length > 0) {
+        const projectsData = projects.map((proj, index) => ({
+          resumeId,
+          ...proj,
+          orderIndex: proj.orderIndex !== undefined ? proj.orderIndex : index
+        }));
+        await Project.insertMany(projectsData);
+      }
     }
 
-    if (certifications) {
+    // Update certifications (delete and recreate)
+    if (certifications !== undefined) {
       await Certification.deleteMany({ resumeId });
-      if (certifications.length)
-        await Certification.insertMany(
-          certifications.map(c => ({ resumeId, ...c }))
-        );
+      if (Array.isArray(certifications) && certifications.length > 0) {
+        const certificationsData = certifications.map((cert, index) => ({
+          resumeId,
+          ...cert,
+          orderIndex: cert.orderIndex !== undefined ? cert.orderIndex : index
+        }));
+        await Certification.insertMany(certificationsData);
+      }
     }
 
-    res.json({ message: 'Resume updated successfully' });
+    res.json({
+      success: true,
+      message: 'Resume updated successfully',
+      resume
+    });
 
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error updating resume:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating resume',
+      error: err.message
+    });
   }
 };
 
 /**
- * DELETE RESUME BY ID
+ * DELETE RESUME AND ALL RELATED DATA
+ * DELETE /api/resumes/:resumeId
  */
 exports.deleteResume = async (req, res) => {
   try {
     const { resumeId } = req.params;
 
-    const resume = await Resume.findOneAndDelete({
+    // Verify resume belongs to user
+    const resume = await Resume.findOne({
       _id: resumeId,
       userId: req.userId
     });
 
     if (!resume) {
-      return res.status(404).json({ message: 'Resume not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Resume not found'
+      });
     }
 
+    // Delete all related data
     await Promise.all([
-      PersonalDetails.deleteOne({ resumeId }),
+      PersonalDetails.deleteMany({ resumeId }),
       Education.deleteMany({ resumeId }),
       ResumeSkill.deleteMany({ resumeId }),
       ResumeLanguage.deleteMany({ resumeId }),
       Experience.deleteMany({ resumeId }),
       Project.deleteMany({ resumeId }),
-      Certification.deleteMany({ resumeId })
+      Certification.deleteMany({ resumeId }),
+      ResumeSection.deleteMany({ resumeId }),
+      Resume.deleteOne({ _id: resumeId })
     ]);
 
-    res.json({ message: 'Resume deleted successfully' });
-
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-
-
-const latexService = require('../services/latex.service');
-
-exports.generateResume = async (req, res) => {
-  try {
-    const resumeData = req.body;
-
-    // 1. Generate PDF
-    const { pdfUrl } = await latexService.generateResumePDF(resumeData);
-
-    // 2. Create FULL URL (IMPORTANT)
-    const fullPdfUrl = `${req.protocol}://${req.get('host')}${pdfUrl}`;
-
-    // 3. Save URL in DB
-    await Resume.findByIdAndUpdate(resumeData.resume._id, {
-      pdfUrl: fullPdfUrl,
-    });
-
-    // 4. Send to frontend
     res.json({
       success: true,
-      pdfUrl: fullPdfUrl,
+      message: 'Resume deleted successfully'
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
+    console.error('Error deleting resume:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deleting resume',
+      error: err.message
+    });
   }
 };

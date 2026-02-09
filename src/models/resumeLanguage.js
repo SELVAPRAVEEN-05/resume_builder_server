@@ -11,7 +11,8 @@ const resumeLanguageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Language',
       required: true
-    }
+    },
+    orderIndex: { type: Number, default: 4 }
   },
   { timestamps: true }
 );

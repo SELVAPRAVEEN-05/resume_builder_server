@@ -22,9 +22,9 @@ const validateResume = (req, res, next) => {
     // Validate education if provided
     if (Array.isArray(education)) {
       for (let edu of education) {
-        if (!edu.collegeId) {
-          return res.status(400).json({ message: 'College ID is required for each education entry' });
-        }
+        // if (!edu.collegeId) {
+        //   return res.status(400).json({ message: 'College ID is required for each education entry' });
+        // }
         if (!edu.graduationYear || isNaN(parseInt(edu.graduationYear))) {
           return res.status(400).json({ message: 'Valid graduation year is required' });
         }
@@ -34,9 +34,9 @@ const validateResume = (req, res, next) => {
     // Validate experience if provided
     if (Array.isArray(experience)) {
       for (let exp of experience) {
-        if (!exp.companyId) {
-          return res.status(400).json({ message: 'Company ID is required for each experience entry' });
-        }
+        // if (!exp.companyId) {
+        //   return res.status(400).json({ message: 'Company ID is required for each experience entry' });
+        // }
         if (!exp.jobTitle || exp.jobTitle.trim() === '') {
           return res.status(400).json({ message: 'Job title is required' });
         }

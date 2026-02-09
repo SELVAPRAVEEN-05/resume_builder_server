@@ -3,10 +3,15 @@ const User = require('../models/user');
 
 const users = [
   {
-    name: 'SELVAPRAVEEN ',
-    email: 's',
-    password: 'S'
+    name: 'Selva Praveen',
+    email: 'selvapraveen@example.com',
+    password: 'Password123!'
   },
+  {
+    name: 'Akshay Kumar',
+    email: 'akshay.kumar@example.com',
+    password: 'SecurePass456!'
+  }
 ];
 
 const seedUsers = async () => {

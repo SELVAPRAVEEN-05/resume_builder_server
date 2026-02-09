@@ -7,15 +7,15 @@ const personalDetailsSchema = new mongoose.Schema(
       ref: 'Resume',
       required: true
     },
-    fullName: String,
-    address: String,
-    email: String,
-    phone: String,
-    website: String,
-    linkedin: String,
-    github: String,
-    dateOfBirth: String,
-    imageUrl: String
+    fullName: { type: String },
+    address: { type: String },
+    email: { type: String },
+    phone: { type: String },
+    website: { type: String , required: false },
+    linkedin: { type: String },
+    github: { type: String },
+    dateOfBirth: { type: Date },
+    imageUrl: { type: String }
   },
   { timestamps: true }
 );

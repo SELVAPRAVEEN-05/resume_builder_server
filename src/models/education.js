@@ -12,8 +12,19 @@ const educationSchema = new mongoose.Schema(
       ref: 'College',
       required: true
     },
-    grade: Number,
-    graduationYear: String
+    degreeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Degree',
+      required: true
+    },
+    specializationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Specialization',
+      required: true
+    },
+    grade: { type: Number },
+    graduationYear: { type: Number },
+    orderIndex: { type: Number, default: 2 }
   },
   { timestamps: true }
 );

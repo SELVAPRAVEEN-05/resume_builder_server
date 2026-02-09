@@ -9,23 +9,18 @@ const skills = [
     { skillName: "Python" },
     { skillName: "JavaScript" },
     { skillName: "TypeScript" },
-
     { skillName: "HTML" },
     { skillName: "CSS" },
-    { skillName: "Tailwind CSS" },
     { skillName: "React.js" },
     { skillName: "Next.js" },
     { skillName: "Node.js" },
     { skillName: "Express.js" },
-
     { skillName: "MongoDB" },
     { skillName: "MySQL" },
     { skillName: "Firebase" },
-
     { skillName: "Git" },
     { skillName: "GitHub" },
     { skillName: "Docker" },
-
     { skillName: "React Native" },
     { skillName: "Android" }
 ];

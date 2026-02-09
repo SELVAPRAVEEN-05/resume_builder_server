@@ -16,10 +16,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/resume', require('./routes/resume.route'));
-app.use('/api/templates', require('./routes/template.routes'));
 
-// Serve output files
-app.use('/output', express.static(path.join(__dirname, '../output')));
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });

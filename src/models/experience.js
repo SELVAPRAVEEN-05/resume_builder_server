@@ -12,10 +12,11 @@ const experienceSchema = new mongoose.Schema(
       ref: 'Company',
       required: true
     },
-    jobTitle: String,
-    startDate: String,
-    endDate: String,
-    description: String
+    jobTitle: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
+    description: { type: String },
+    orderIndex: { type: Number, default: 4 }
   },
   { timestamps: true }
 );

@@ -1,35 +1,33 @@
-// db schema
-// Resume Builder Database Diagram (Normalized)
+// =======================
+// USERS
+// =======================
 
 Table users {
   id objectid [primary key]
   name varchar
   email varchar [unique]
   password varchar
+  createdAt timestamp
 }
+
+// =======================
+// RESUMES
+// =======================
 
 Table resumes {
   id objectid [primary key]
   userId objectid [not null]
-  templateId objected
+  templateKey varchar   // eg: modern_1, classic_2
   objective text
+  createdAt timestamp
+  updatedAt timestamp
 }
 
-Table templates {
-  id objectid [primary key]
-  name varchar
-  description text
-  filePath varchar [not null]
-  isActive boolean
-  previewUrl varchar
-}
+// =======================
+// PERSONAL DETAILS
+// =======================
 
-
-/* =======================
-   Personal Details
-======================= */
-
-Table personalDetails {
+Table personal_details {
   id objectid [primary key]
   resumeId objectid [not null]
   fullName varchar
@@ -39,81 +37,103 @@ Table personalDetails {
   website varchar
   linkedin varchar
   github varchar
-  dateOfBirth varchar
+  dateOfBirth date
   imageUrl varchar
 }
 
-/* =======================
-   Colleges & Education
-======================= */
+// =======================
+// EDUCATION MASTER TABLES
+// =======================
 
 Table colleges {
   id objectid [primary key]
   collegeName varchar
-  degree varchar
-  specialization varchar
 }
+
+Table degrees {
+  id objectid [primary key]
+  degreeName varchar
+}
+
+Table specializations {
+  id objectid [primary key]
+  specializationName varchar
+}
+
+// =======================
+// EDUCATION
+// =======================
 
 Table education {
   id objectid [primary key]
   resumeId objectid [not null]
   collegeId objectid [not null]
+  degreeId objectid [not null]
+  specializationId objectid [not null]
   grade float
-  graduationYear varchar
+  graduationYear int
+  orderIndex int
 }
 
-/* =======================
-   Skills
-======================= */
+// =======================
+// SKILLS
+// =======================
 
 Table skills {
   id objectid [primary key]
   skillName varchar
 }
 
-Table resumeSkills {
+Table resume_skills {
   id objectid [primary key]
   resumeId objectid [not null]
   skillId objectid [not null]
+  orderIndex int
 }
 
-/* =======================
-   Languages
-======================= */
+// =======================
+// LANGUAGES
+// =======================
 
 Table languages {
   id objectid [primary key]
   languageName varchar
 }
 
-Table resumeLanguages {
+Table resume_languages {
   id objectid [primary key]
   resumeId objectid [not null]
   languageId objectid [not null]
+  orderIndex int
 }
 
-/* =======================
-   Companies & Experience
-======================= */
+// =======================
+// COMPANIES
+// =======================
 
 Table companies {
   id objectid [primary key]
   companyName varchar
 }
 
+// =======================
+// EXPERIENCE
+// =======================
+
 Table experience {
   id objectid [primary key]
   resumeId objectid [not null]
   companyId objectid [not null]
   jobTitle varchar
-  startDate varchar
-  endDate varchar
+  startDate date
+  endDate date
   description text
+  orderIndex int
 }
 
-/* =======================
-   Projects
-======================= */
+// =======================
+// PROJECTS
+// =======================
 
 Table projects {
   id objectid [primary key]
@@ -121,40 +141,54 @@ Table projects {
   title varchar
   description text
   techStack varchar
+  orderIndex int
 }
 
-/* =======================
-   Certifications
-======================= */
+// =======================
+// CERTIFICATIONS
+// =======================
 
 Table certifications {
   id objectid [primary key]
   resumeId objectid [not null]
   name varchar
   grade float
-  date varchar
+  date date
   link varchar
   description text
+  orderIndex int
 }
 
-/* =======================
-   Relationships
-======================= */
+// =======================
+// SECTION VISIBILITY & ORDER (TEMPLATE SUPPORT)
+// =======================
 
+Table resume_sections {
+  id objectid [primary key]
+  resumeId objectid [not null]
+  sectionKey varchar   // education, skills, projects, etc
+  isVisible boolean
+  orderIndex int
+}
 
-Ref: resumes.userId > users.id
+// =======================
+// RELATIONSHIPS
+// =======================
 
-Ref: personalDetails.resumeId > resumes.id
+Ref: users.id > resumes.userId
+
+Ref: personal_details.resumeId > resumes.id
 
 Ref: education.resumeId > resumes.id
 Ref: education.collegeId > colleges.id
+Ref: education.degreeId > degrees.id
+Ref: education.specializationId > specializations.id
 
-Ref: resumeSkills.resumeId > resumes.id
-Ref: resumeSkills.skillId > skills.id
+Ref: resume_skills.resumeId > resumes.id
+Ref: resume_skills.skillId > skills.id
 
-Ref: resumeLanguages.resumeId > resumes.id
-Ref: resumeLanguages.languageId > languages.id
-Ref: templates.id < templates.name
+Ref: resume_languages.resumeId > resumes.id
+Ref: resume_languages.languageId > languages.id
 
 Ref: experience.resumeId > resumes.id
 Ref: experience.companyId > companies.id
@@ -162,5 +196,4 @@ Ref: experience.companyId > companies.id
 Ref: projects.resumeId > resumes.id
 Ref: certifications.resumeId > resumes.id
 
-
-Ref: templates.id < resumes.templateId
+Ref: resume_sections.resumeId > resumes.id

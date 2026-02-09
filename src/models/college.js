@@ -6,8 +6,6 @@ const collegeSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    degree: String,
-    specialization: String
   },
   { timestamps: true }
 );

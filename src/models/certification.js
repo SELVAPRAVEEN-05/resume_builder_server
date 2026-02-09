@@ -7,11 +7,12 @@ const certificationSchema = new mongoose.Schema(
       ref: 'Resume',
       required: true
     },
-    name: String,
-    grade: Number,
-    date: String,
-    link: String,
-    description: String
+    name: { type: String },
+    grade: { type: Number },
+    date: { type: Date },
+    link: { type: String },
+    description: { type: String },
+    orderIndex: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

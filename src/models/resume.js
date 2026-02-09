@@ -7,19 +7,11 @@ const resumeSchema = new mongoose.Schema(
             ref: 'User',
             required: true
         },
-        templateId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Template'
-        },
-        objective: {
+        templateKey: {
             type: String,
             default: ''
         },
-        pdfUrl: {
-            type: String,
-            default: null
-        },
-        title: {
+        objective: {
             type: String,
             default: ''
         }

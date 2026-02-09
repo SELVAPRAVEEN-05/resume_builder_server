@@ -7,9 +7,10 @@ const projectSchema = new mongoose.Schema(
       ref: 'Resume',
       required: true
     },
-    title: String,
-    description: String,
-    techStack: String
+    title: { type: String },
+    description: { type: String },
+    techStack: { type: String },
+    orderIndex: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

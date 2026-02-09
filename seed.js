@@ -5,9 +5,10 @@ const mongoose = require('mongoose');
 const seedSkills = require('./src/seed/skill');
 const seedLanguages = require('./src/seed/language');
 const seedColleges = require('./src/seed/collage');
+const seedDegrees = require('./src/seed/degree');
+const seedSpecializations = require('./src/seed/specialization');
 const seedCompanies = require('./src/seed/company');
 const seedUsers = require('./src/seed/user');
-const seedTemplates = require('./src/seed/template');
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/resume-builder';
 
@@ -21,12 +22,13 @@ const seedDatabase = async () => {
     console.log('='.repeat(50));
 
     // Run all seed functions
-    // await seedSkills();
-    // await seedLanguages();
-    // await seedColleges();
-    // await seedCompanies();
-    // await seedUsers();
-    await seedTemplates();
+    await seedUsers();
+    await seedColleges();
+    await seedDegrees();
+    await seedSpecializations();
+    await seedSkills();
+    await seedLanguages();
+    await seedCompanies();
 
     console.log('='.repeat(50));
     console.log('\n Database seeding completed successfully!\n');
