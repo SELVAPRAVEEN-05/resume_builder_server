@@ -8,17 +8,12 @@ const Project = require('../models/project');
 const Certification = require('../models/certification');
 const ResumeSection = require('../models/resumeSection');
 
-/**
- * CREATE RESUME
- * POST /api/resumes
- * Required: userId (from auth middleware)
- * Optional: templateKey, objective, personal, education, skills, languages, experience, projects, certifications
- */
+
 exports.createResume = async (req, res) => {
   try {
     const userId = req.userId;
     const {
-      templateKey = 'modern_1',
+      templateKey = 'classic',
       objective = '',
       personal,
       education,
@@ -121,10 +116,6 @@ exports.createResume = async (req, res) => {
   }
 };
 
-/**
- * GET ALL RESUMES OF CURRENT USER
- * GET /api/resumes
- */
 exports.getMyResumes = async (req, res) => {
   try {
     const resumes = await Resume
@@ -148,10 +139,6 @@ exports.getMyResumes = async (req, res) => {
   }
 };
 
-/**
- * GET SINGLE RESUME WITH ALL DETAILS
- * GET /api/resumes/:resumeId
- */
 exports.getResumeById = async (req, res) => {
   try {
     const { resumeId } = req.params;
@@ -226,10 +213,6 @@ exports.getResumeById = async (req, res) => {
   }
 };
 
-/**
- * UPDATE RESUME
- * PUT /api/resumes/:resumeId
- */
 exports.updateResume = async (req, res) => {
   try {
     const { resumeId } = req.params;
@@ -366,10 +349,6 @@ exports.updateResume = async (req, res) => {
   }
 };
 
-/**
- * DELETE RESUME AND ALL RELATED DATA
- * DELETE /api/resumes/:resumeId
- */
 exports.deleteResume = async (req, res) => {
   try {
     const { resumeId } = req.params;

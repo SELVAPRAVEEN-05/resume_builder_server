@@ -9,7 +9,7 @@ const projectSchema = new mongoose.Schema(
     },
     title: { type: String },
     description: { type: String },
-    techStack: { type: String },
+    techStack: { type: [String] },
     orderIndex: { type: Number, default: 0 }
   },
   { timestamps: true }

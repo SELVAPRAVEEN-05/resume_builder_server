@@ -8,6 +8,7 @@ const personalDetailsSchema = new mongoose.Schema(
       required: true
     },
     fullName: { type: String },
+    role: { type: String },
     address: { type: String },
     email: { type: String },
     phone: { type: String },
