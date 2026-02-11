@@ -140,7 +140,7 @@ Table projects {
   resumeId objectid [not null]
   title varchar
   description text
-  techStack varchar
+  techStack varchar[]
   orderIndex int
 }
 

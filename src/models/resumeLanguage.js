@@ -10,7 +10,6 @@ const resumeLanguageSchema = new mongoose.Schema(
     languageId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Language',
-      required: true
     },
     orderIndex: { type: Number, default: 4 }
   },

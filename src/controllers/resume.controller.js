@@ -13,7 +13,7 @@ exports.createResume = async (req, res) => {
   try {
     const userId = req.userId;
     const {
-      templateKey = 'classic',
+      templateKey = '',
       objective = '',
       personal,
       education,
@@ -38,6 +38,7 @@ exports.createResume = async (req, res) => {
         ...personal
       });
     }
+    console.log('Personal details added:', personal);
 
     // Add education if provided
     if (education && Array.isArray(education) && education.length > 0) {
@@ -46,26 +47,30 @@ exports.createResume = async (req, res) => {
         ...edu,
         orderIndex: edu.orderIndex !== undefined ? edu.orderIndex : index
       }));
+      console.log('Education added:', educationData);
       await Education.insertMany(educationData);
     }
 
-    // Add skills if provided
+
     if (skills && Array.isArray(skills) && skills.length > 0) {
       const skillsData = skills.map((skillId, index) => ({
         resumeId: resume._id,
-        skillId,
+        skillId : skillId.id ? skillId.id : skillId,
         orderIndex: index
       }));
+      console.log('Skills added:', skillsData);
       await ResumeSkill.insertMany(skillsData);
     }
+
 
     // Add languages if provided
     if (languages && Array.isArray(languages) && languages.length > 0) {
       const languagesData = languages.map((languageId, index) => ({
         resumeId: resume._id,
-        languageId,
+        languageId : languageId.id ? languageId.id : languageId,
         orderIndex: index
       }));
+      console.log('Languages added:', languagesData);
       await ResumeLanguage.insertMany(languagesData);
     }
 
@@ -76,6 +81,7 @@ exports.createResume = async (req, res) => {
         ...exp,
         orderIndex: exp.orderIndex !== undefined ? exp.orderIndex : index
       }));
+      console.log('Experience added:', experienceData);
       await Experience.insertMany(experienceData);
     }
 
@@ -86,6 +92,7 @@ exports.createResume = async (req, res) => {
         ...proj,
         orderIndex: proj.orderIndex !== undefined ? proj.orderIndex : index
       }));
+      console.log('Projects added:', projectsData);
       await Project.insertMany(projectsData);
     }
 
@@ -96,6 +103,7 @@ exports.createResume = async (req, res) => {
         ...cert,
         orderIndex: cert.orderIndex !== undefined ? cert.orderIndex : index
       }));
+      console.log('Certifications added:', certificationsData);
       await Certification.insertMany(certificationsData);
     }
 
@@ -105,6 +113,7 @@ exports.createResume = async (req, res) => {
       resumeId: resume._id,
       resume
     });
+
 
   } catch (err) {
     console.error('Error creating resume:', err);

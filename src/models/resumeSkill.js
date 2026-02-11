@@ -10,7 +10,6 @@ const resumeSkillSchema = new mongoose.Schema(
     skillId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Skill',
-      required: true
     },
     orderIndex: { type: Number, default: 3 }
   },
